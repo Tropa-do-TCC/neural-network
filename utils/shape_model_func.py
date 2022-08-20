@@ -16,14 +16,22 @@ def load_shape_model(shape_model_file, eigvec_per):
 
     """
     mat_contents = sio.loadmat(shape_model_file)
+    print(mat_contents)
     shape_model = mat_contents['ShapeData']
     shape_model = shape_model[0, 0]
+    shape_model["Evectors"] = np.positive(shape_model["Evectors"])
+    hrn = shape_model["Evectors"]
+
     if (eigvec_per != 1):
+        #soma = np.sum(shape_model['Evalues'])
+        #soma_porra = np.cumsum(shape_model['Evalues'])
+        #ind = np.nonzero(soma_porra > soma) * eigvec_per)[0][0]
         ind = np.nonzero(np.cumsum(shape_model['Evalues']) > np.sum(shape_model['Evalues']) * eigvec_per)[0][0]
         shape_model['Evectors'] = shape_model['Evectors'][:, :ind + 1]
         shape_model['Evalues'] = shape_model['Evalues'][:ind + 1]
     shape_model['Evalues'] = np.squeeze(shape_model['Evalues'])
     shape_model['x_mean'] = np.squeeze(shape_model['x_mean'])
+    po = shape_model['Evectors']
     return shape_model
 
 
@@ -78,6 +86,7 @@ def init_shape_params(num_random_init, k_top_b, sd, shape_model):
       b: initialisation of b. [num_examples, num_shape_params]
 
     """
+    por = shape_model['Evectors']
     num_shape_params = shape_model['Evectors'].shape[1]
 
     if num_random_init is None:     # Using fixed initialisations

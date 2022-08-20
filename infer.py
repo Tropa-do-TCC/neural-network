@@ -12,6 +12,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from pdb import set_trace
 
 import numpy as np
 import scipy.ndimage
@@ -32,7 +33,7 @@ class Config(object):
     test_list_file = './data/list_test.txt'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = './shape_model/shape_model/ShapeModel.mat'
+    shape_model_file = './shape_model/shape_model/ShapeModelTeste2.mat'
     eigvec_per = 0.995      # Percentage of eigenvectors to keep
     sd = 3.0                # Standard deviation of shape parameters
     landmark_count = 10     # Number of landmarks
@@ -51,6 +52,8 @@ class Config(object):
 
 
 def main():
+    set_trace()
+
     config = Config()
 
     # Load shape model

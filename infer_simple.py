@@ -17,7 +17,7 @@ import numpy as np
 import scipy.ndimage
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from click._compat import raw_input
+#from click._compat import raw_input
 from plotly.matplotlylib.mplexporter._py3k_compat import xrange
 
 from utils import input_data, shape_model_func, patch, plane
@@ -29,7 +29,7 @@ class Config(object):
     model_dir = './cnn_model'
     # Shape model parameters
     shape_model_file = './shape_model/shape_model/ShapeModel.mat'
-    eigvec_per = 0.995      # Percentage of eigenvectors to keep
+    eigvec_per = 0.995      # Percentage of eigenvectors to kesep
     sd = 3.0                # Standard deviation of shape parameters
     # Testing parameters
     landmark_count = 10     # Number of landmarks
@@ -59,6 +59,8 @@ def main():
     cnn_model['x'] = g.get_collection('x')[0]
     cnn_model['keep_prob'] = g.get_collection('keep_prob')[0]
 
+
+    NARUTO  = shape_model["Evectors"]
     # Network inference
     landmarks, slice_tv, slice_tc, landmarks_proj_tv, landmarks_proj_tc = predict_landmarks(img[..., np.newaxis],
                                                                                             pix_dim,
@@ -85,11 +87,14 @@ def main():
     marker_size = np.abs(landmarks_proj_tc[:, 2]) * 5
     plt.scatter(landmarks_proj_tc[:, 1], landmarks_proj_tc[:, 0], c=landmarks_proj_tc.shape[0]*[[0, 1, 0]], s=marker_size, alpha=0.3)
     plt.scatter(landmarks_proj_tc[:, 1], landmarks_proj_tc[:, 0], c=landmarks_proj_tc.shape[0]*[[0, 1, 0]], s=6)
-    raw_input()
+#    raw_input()
+    input()
     plt.close(fig)
 
 
 def predict_landmarks(image, pix_dim, config, shape_model, cnn_model):
+    print("SHAPE MODEL")
+    print(shape_model)
     """Predict landmarks.
 
     Args:
@@ -115,6 +120,7 @@ def predict_landmarks(image, pix_dim, config, shape_model, cnn_model):
 
     # Initialise shape parameters. Initialise b=0 and 5 random initialisations.
     num_shape_params = shape_model['Evectors'].shape[1]
+    x = shape_model['Evectors']
     b = np.zeros((num_examples, num_shape_params))
     bounds = config.sd * np.sqrt(shape_model['Evalues'])
     b[1:num_examples] = np.random.rand(config.num_random_init, num_shape_params) * 2 * bounds - bounds
@@ -143,7 +149,22 @@ def predict_landmarks(image, pix_dim, config, shape_model, cnn_model):
         action_prob = action_prob / np.expand_dims(np.sum(action_prob, axis=1), 1)  # action_prob=[num_examples, 2*num_shape_params]
 
         # Update b values by multiplying classification probabilities with regressed distances.
-        b = b - yr_val * np.amax(np.reshape(action_prob, (b.shape[0], b.shape[1], 2)), axis=2)
+        '''
+        print(len(b))
+        print(b)
+        print(len(action_prob))
+        print(action_prob)
+        print(len(yr_val))
+        print(yr_val)
+
+        print("=======================")
+        print(b.shape[0])
+        print(b.shape[1])
+        '''
+
+        t = np.reshape(action_prob, (b.shape[0], b.shape[1], 2))
+
+        b = b - yr_val * np.amax(t, axis=2)
 
         # Convert b to landmarks
         landmarks = shape_model_func.b2landmarks(b, shape_model)  # landmarks=[num_examples, num_landmarks, 3]
