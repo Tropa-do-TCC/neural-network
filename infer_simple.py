@@ -28,13 +28,13 @@ class Config(object):
     """Inference configurations."""
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = './shape_model/shape_model/ShapeModel.mat'
+    shape_model_file = './shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
     eigvec_per = 0.995      # Percentage of eigenvectors to keep
     sd = 3.0                # Standard deviation of shape parameters
     # Testing parameters
-    landmark_count = 10     # Number of landmarks
+    landmark_count = 9     # Number of landmarks
     box_size = 101          # patch size (odd number)
-    max_test_steps = 10     # Number of inference steps
+    max_test_steps = 10000     # Number of inference steps
     num_random_init = 5     # Number of random initialisations used
 
 
@@ -45,7 +45,7 @@ def main():
     shape_model = shape_model_func.load_shape_model(config.shape_model_file, config.eigvec_per)
 
     # Load one test image
-    img, pix_dim = input_data.extract_image('./data/Images/data1.nii.gz')
+    img, pix_dim = input_data.extract_image('data/DICOMs.nii.gz')
 
     # Load CNN model
     cnn_model = {}
@@ -131,6 +131,7 @@ def predict_landmarks(image, pix_dim, config, shape_model, cnn_model):
     landmarks_all_steps[0] = landmarks
 
     for j in xrange(max_test_steps):  # find path of landmark iteratively
+        print("Step:" + str(j))
         # Predict CNN outputs
         action_ind_val, yc_val, yr_val = cnn_model['sess'].run([cnn_model['action_ind'],
                                                                 cnn_model['yc'],

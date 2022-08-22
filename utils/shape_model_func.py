@@ -15,11 +15,27 @@ def load_shape_model(shape_model_file, eigvec_per):
     shape_model: a structure containing the shape model
 
     """
-    mat_contents = sio.loadmat(shape_model_file)
-    shape_model = mat_contents['ShapeData']
-    shape_model = shape_model[0, 0]
+    mat_contents = sio.loadmat(shape_model_file, appendmat=False)
+    #shape_model = mat_contents["ShapeData"]
+    shape_model = mat_contents
+    evectors = shape_model['Evectors']
+    x_mean = shape_model['x_mean']
+    evalues = shape_model['Evalues']
+
+    print(shape_model['Evectors'])
+    print(shape_model['x_mean'])
+
+    shape_model.pop("__header__")
+    shape_model.pop("__globals__")
+    print(len(shape_model['Evectors']))
+    print(len(shape_model['x_mean']))
     if (eigvec_per != 1):
-        ind = np.nonzero(np.cumsum(shape_model['Evalues']) > np.sum(shape_model['Evalues']) * eigvec_per)[0][0]
+        soma_porra = np.cumsum(shape_model['Evalues'])
+        soma = np.sum(shape_model['Evalues'])
+        ind_value = soma_porra > soma * eigvec_per
+        ind = np.nonzero(ind_value)[0][0]
+        print("IND: " + str(ind))
+        # ind = 14
         shape_model['Evectors'] = shape_model['Evectors'][:, :ind + 1]
         shape_model['Evalues'] = shape_model['Evalues'][:ind + 1]
     shape_model['Evalues'] = np.squeeze(shape_model['Evalues'])
@@ -67,16 +83,13 @@ def init_shape_params(num_random_init, k_top_b, sd, shape_model):
     b = +/-(sd*sqrt(eigvalues)) for k_top_b principal components
     or
     b = num_random_init random initialisations
-
     Args:
       num_random_init: Number of random initialisations. If set to None, use fixed initialisation defined by k_top_b.
       k_top_b: The top k principal components to use for fixed initialisation. Only valid if num_random_init is set to None.
       sd: standard deviation away from eigenvalues
       shape_model: needed for the eigenvalues
-
     Returns:
       b: initialisation of b. [num_examples, num_shape_params]
-
     """
     num_shape_params = shape_model['Evectors'].shape[1]
 

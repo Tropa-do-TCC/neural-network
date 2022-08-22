@@ -145,7 +145,7 @@ def cnn(x, num_output_c, num_output_r):
     # First convolution block
     conv1_1 = conv_act_layer(layer_name='conv1_1',
                               input_tensor=x,
-                              input_dim=30,
+                              input_dim=27,
                               output_dim=32,
                               conv_kernel=[3, 3],
                               conv_strides=[1, 1],

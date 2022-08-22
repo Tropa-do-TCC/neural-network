@@ -135,7 +135,9 @@ def extract_all_image_and_label(file_list,
     images.append(np.expand_dims(img, axis=3))
     labels[i, :, :] = label
   # Compute shape parameters
-  shape_params = shape_model_func.landmarks2b(labels, shape_model)
+  shape_params = None
+  if shape_model is not None:
+    shape_params = shape_model_func.landmarks2b(labels, shape_model)
   return filenames, images, labels, shape_params, pix_dim
 
 
