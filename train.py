@@ -14,11 +14,14 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 import tensorflow as tf
 from plotly.matplotlylib.mplexporter._py3k_compat import xrange
 
 from utils import input_data, shape_model_func, network, patch
+import logging
+logging.getLogger('tensorflow').disabled = True
 
 
 class Config(object):

@@ -1,10 +1,14 @@
 function [ShapeData TrainingData]= ASM_MakeShapeModel2D(TrainingData,eigVecPer)
 
-% Number of datasets
+% "Number of datasets"
+disp('Number of datasets')
 s=length(TrainingData);
+disp(s)
 
 % Number of landmarks
 nl = size(TrainingData(1).Vertices,1);
+disp('Number of landmarks')
+disp(nl)
 
 %% Shape model
 % Construct a matrix with all contour point data of the training data set
@@ -12,6 +16,8 @@ x=zeros(nl*3,s);
 for i=1:length(TrainingData)
     x(:,i)=reshape(TrainingData(i).Vertices', [], 1);
 end
+disp('new matrix')
+disp(x)
 
 [Evalues, Evectors, x_mean]=PCA(x);
 

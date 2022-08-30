@@ -1,8 +1,9 @@
 """Functions for visualisations."""
 
 import os
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d import Axes3D
 from plotly.matplotlylib.mplexporter._py3k_compat import xrange
@@ -75,7 +76,7 @@ def plot_landmarks_2d(save_dir, train, name, image, landmarks, landmarks_gt):
     plt.axis('off')
     plt.imshow(slice_tv, cmap='gray')
     marker_size = np.abs(landmarks_tv_proj[:, 2]) * 5
-    plt.scatter(landmarks_tv_proj[:, 1], landmarks_tv_proj[:, 0], c=[0, 1, 0], s=marker_size, alpha=0.3)
+    plt.scatter(landmarks_tv_proj[:, 1], landmarks_tv_proj[:, 0], c=[0, 1, 0], s=0, alpha=0.3)
     plt.scatter(landmarks_tv_proj[:, 1], landmarks_tv_proj[:, 0], c=[0, 1, 0], s=6)
     plt.scatter(landmarks_gt_tv_proj[:, 1], landmarks_gt_tv_proj[:, 0], c=[1, 0, 0], s=6)
     plt.subplot(122)
@@ -83,7 +84,7 @@ def plot_landmarks_2d(save_dir, train, name, image, landmarks, landmarks_gt):
     plt.axis('off')
     plt.imshow(slice_tc, cmap='gray')
     marker_size = np.abs(landmarks_tc_proj[:, 2]) * 5
-    plt.scatter(landmarks_tc_proj[:, 1], landmarks_tc_proj[:, 0], c=landmarks_tc_proj.shape[0]*[[0, 1, 0]], s=marker_size, alpha=0.3)
+    plt.scatter(landmarks_tc_proj[:, 1], landmarks_tc_proj[:, 0], c=landmarks_tc_proj.shape[0]*[[0, 1, 0]], s=0, alpha=0.3)
     plt.scatter(landmarks_tc_proj[:, 1], landmarks_tc_proj[:, 0], c=landmarks_tc_proj.shape[0]*[[0, 1, 0]], s=6)
     plt.scatter(landmarks_gt_tc_proj[:, 1], landmarks_gt_tc_proj[:, 0], c=landmarks_tc_proj.shape[0]*[[1, 0, 0]], s=6)
     if train:

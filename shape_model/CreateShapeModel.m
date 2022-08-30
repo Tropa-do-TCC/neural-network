@@ -3,7 +3,7 @@
 % This Script is adapted from:
 % https://uk.mathworks.com/matlabcentral/fileexchange/26706-active-shape-model-asm-and-active-appearance-model-aam
 %
-% Literature used: Ginneken B. et al. "Active Shape Model Segmentation 
+% Literature used: Ginneken B. et al. "Active Shape Model Segmentation
 % with Optimal Features", IEEE Transactions on Medical Imaging 2002.
 %
 % Functions are written by D.Kroon University of Twente (February 2010)
@@ -17,17 +17,17 @@ addpath('./NIfTI_reader/')
 
 %% Set options
 % folder containing the training landmarks
-landmarkFolder='/vol/medic01/users/yl5709/iFIND/Data/Feta_Head_30_149/Isovoxel_Align/Fixed_Size_324_207_279/Landmarks/';
+landmarkFolder='../data/Landmarks/';
 % file containing list of shape images to use
-shapeListFile = '/vol/medic01/users/yl5709/iFIND/Data/Feta_Head_30_149/File_List/list_all_train.txt';
+shapeListFile = '../data/list_train.txt';
 % folder storing the shape model txt and mat file
 shapeModelFolder='./shape_model/';
 % Percentage of variance used to keep the eigenvectors used in the model. (ie. 0.98)
 options.eigVecPer=1;
-% New image size that is required by the CNN 
+% New image size that is required by the CNN
 imgSizeCNN = [324 207 279];
 % unwanted landmark indices for aligned images
-landmark_unwant = [1 9 10 14 15 16];
+landmark_unwant = [1];
 % If verbose is true all debug images will be shown.
 options.verbose=true;
 
@@ -37,7 +37,7 @@ if ~exist(shapeModelFolder, 'dir')
 end
 %% Load training data
 % First Load the Landmarks Training DataSets
-fileID = fopen(shapeListFile,'r'); 
+fileID = fopen(shapeListFile,'r');
 ids = textscan(fileID,'%s');
 ids = ids{1};
 fclose(fileID);
