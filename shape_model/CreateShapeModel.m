@@ -46,13 +46,13 @@ TrainingData=struct;
 num_ex = length(ids);
 for i=1:num_ex
     disp(['loading image ' num2str(i) '/' num2str(num_ex)])
-    
+
     % Load landmarks
     fid = fopen([landmarkFolder ids{i} '_ps.txt'], 'r');
     landmarks = fscanf(fid, '%f %f %f', [3 Inf]);
     landmarks = landmarks';
     fclose(fid);
-    
+
     % Remove unwanted landmarks
     landmarks(landmark_unwant, :) = [];
     TrainingData(i).Vertices=landmarks;

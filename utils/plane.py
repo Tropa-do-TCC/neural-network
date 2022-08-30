@@ -17,7 +17,7 @@ def unit_vector(data, axis=None, out=None):
         if out is not data:
             out[:] = np.array(data, copy=False)
         data = out
-    length = np.atleast_1d(np.sum(data*data, axis))
+    length = np.atleast_1d(np.sum(data * data, axis))
     np.sqrt(length, length)
     if axis is not None:
         length = np.expand_dims(length, axis)
@@ -67,6 +67,7 @@ def fit_plane(pts):
         n = -n
     return n, c
 
+
 def project_on_plane(pts, n, c):
     """Project points onto a 2D plane.
 
@@ -95,13 +96,13 @@ def extract_tform(landmarks, plane_name):
       mat: 4x4 transformation matrix [4, 4]
 
     """
-    if plane_name=='tv':
+    if plane_name == 'tv':
         # Fit plane and project landmarks onto plane
         z_vec, p_plane = fit_plane(landmarks)
         landmarks_proj = project_on_plane(landmarks, z_vec, p_plane)
 
         # Fit mid line
-        landmarks_line = landmarks_proj[[0,1,2,7], :]
+        landmarks_line = landmarks_proj[[0, 1, 2, 7], :]
         x_vec, p_line = fit_line(landmarks_line)
         y_vec = unit_vector(np.cross(z_vec, x_vec))
 
@@ -110,7 +111,7 @@ def extract_tform(landmarks, plane_name):
         mat[:3, :3] = np.vstack((x_vec, y_vec, z_vec)).transpose()
         mat[:3, 3] = landmarks_proj[0]
 
-    elif plane_name=='tc':
+    elif plane_name == 'tc':
         # Landmarks lying on the TC plane
         cr = landmarks[0]
         cl = landmarks[1]
@@ -173,7 +174,7 @@ def extract_plane_from_mesh(image, mesh, mesh_siz, order):
     """
     # Set image matrix corner as origin
     img_siz = np.array(image.shape)
-    img_c = (img_siz-1)/2.0
+    img_c = (img_siz - 1) / 2.0
     mesh_new = mesh[:3, :] + np.expand_dims(img_c, axis=1)
 
     # Reshape coordinates

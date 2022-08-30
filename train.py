@@ -28,25 +28,25 @@ class Config(object):
     """Training configurations."""
     # File paths
     data_dir = './data/Images'
-    label_dir = './data/Landmarks'
+    label_dir = './data/landmarsk_from_ct'
     train_list_file = './data/list_train.txt'
     test_list_file = './data/list_test.txt'
     log_dir = './logs'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = './shape_model/shape_model/ShapeModel.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
     eigvec_per = 0.995      # Percentage of eigenvectors to keep
     sd = 3.0                # Standard deviation of shape parameters
-    landmark_count = 10     # Number of landmarks
-    landmark_unwant = [0, 8, 9, 13, 14, 15]     # list of unwanted landmark indices
+    landmark_count = 9     # Number of landmarks
+    landmark_unwant = []     # list of unwanted landmark indices
     # Training parameters
     resume = False          # Whether to train from scratch or resume previous training
     box_size = 101          # patch size (odd number)
     alpha = 0.5             # Weighting given to the loss (0<=alpha<=1). loss = alpha*loss_c + (1-alpha)*loss_r
     learning_rate = 0.001
-    max_steps = 100      # Number of steps to train
-    save_interval = 25000   # Number of steps in between saving each model
-    batch_size = 64         # Training batch size
+    max_steps = 1000     # Number of steps to train
+    save_interval = 250   # Number of steps in between saving each model
+    batch_size = 10         # Training batch size
     dropout = 0.5
 
 
@@ -167,31 +167,6 @@ def main():
                                                                      shape_model,
                                                                      config.sd)
 
-        if i % 10 == 0:
-            # Record summaries and test-set loss and accuracy
-            patches_test, actions_test, dbs_test, _ = get_train_pairs(config.batch_size,
-                                                                      data.test.images,
-                                                                      data.test.shape_params,
-                                                                      config.box_size,
-                                                                      num_cnn_output_c,
-                                                                      num_cnn_output_r,
-                                                                      shape_model,
-                                                                      config.sd)
-            summary_test, l_test, lc_test, lr_test, acc_test = sess.run([merged, loss, loss_c, loss_r, accuracy], feed_dict={x: patches_test,
-                                                                                                                             yc_: actions_test,
-                                                                                                                             yr_: dbs_test,
-                                                                                                                             keep_prob: 1.0,
-                                                                                                                             alpha: config.alpha})
-            test_writer.add_summary(summary_test, i)
-            # Record summaries and train-set loss and accuracy
-            summary_train, l_train, lc_train, lr_train, acc_train = sess.run([merged, loss, loss_c, loss_r, accuracy], feed_dict={x: patches_train,
-                                                                                                                                  yc_: actions_train,
-                                                                                                                                  yr_: dbs_train,
-                                                                                                                                  keep_prob: 1.0,
-                                                                                                                                  alpha: config.alpha})
-            train_writer.add_summary(summary_train, i)
-            print('Step {}: \ttrain: loss={:11.6f}, loss_c={:9.6f}, loss_r={:11.6f}, acc={:8.6f}. \ttest: loss={:11.6f}, loss_c={:9.6f}, loss_r={:11.6f}, acc={:8.6f}.'.format
-                  (i, l_train, lc_train, lr_train, acc_train, l_test, lc_test, lr_test, acc_test))
 
         # Train one step
         _ = sess.run(train_step, feed_dict={x: patches_train,

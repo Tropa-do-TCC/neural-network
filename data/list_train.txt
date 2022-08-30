@@ -1,2 +1,5 @@
+<<<<<<< HEAD
 data1
 data2
+=======
+>>>>>>> cdb79294ffe076500f17eb0046fcf639bdeeb3c7

@@ -27,19 +27,19 @@ class Config(object):
     """Inference configurations."""
     # File paths
     data_dir = './data/Images'
-    label_dir = './data/Landmarks'
+    label_dir = './data/landmarsk_from_ct'
     train_list_file = './data/list_train.txt'
     test_list_file = './data/list_test.txt'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = './shape_model/shape_model/ShapeModel.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
     eigvec_per = 0.995      # Percentage of eigenvectors to keep
     sd = 3.0                # Standard deviation of shape parameters
-    landmark_count = 10     # Number of landmarks
-    landmark_unwant = [0, 8, 9, 13, 14, 15]     # list of unwanted landmark indices
+    landmark_count = 9     # Number of landmarks
+    landmark_unwant = []     # list of unwanted landmark indices
     # Testing parameters
     box_size = 101          # patch size (odd number)
-    max_test_steps = 10     # Number of inference steps
+    max_test_steps = 500     # Number of inference steps
     num_random_init = 5     # Number of random initialisations used
     predict_mode = 1        # How the new patch position is computed.
                             # 0: Classification and regression. Hard classification
@@ -47,7 +47,7 @@ class Config(object):
                             # 2: Regression only
                             # 3: Classification only
     # Visualisation parameters
-    visual = True           # Whether to save visualisation
+    visual = False           # Whether to save visualisation
 
 
 def main():
@@ -83,8 +83,8 @@ def main():
     predict(data.test, config, shape_model, False,
             sess, x, action_ind, yc, yr, keep_prob)
     # Evaluation on train-set
-    predict(data.train, config, shape_model, True,
-            sess, x, action_ind, yc, yr, keep_prob)
+    # predict(data.train, config, shape_model, True,
+    #         sess, x, action_ind, yc, yr, keep_prob)
     sess.close()
 
 
@@ -175,11 +175,12 @@ def predict_landmarks(image, config, shape_model,
     num_landmarks = config.landmark_count
     max_test_steps = config.max_test_steps
     box_size = config.box_size
-    box_r = int((box_size-1)/2)
+    box_r = int((box_size - 1) / 2)
 
     # Initialise shape parameters, b=0 and landmarks, x
-    b = shape_model_func.init_shape_params(config.num_random_init, None, config.sd, shape_model)     # b=[num_examples, num_shape_params]
-    landmarks = shape_model_func.b2landmarks(b, shape_model)    # landmarks=[num_examples, num_landmarks, 3]
+    b = shape_model_func.init_shape_params(config.num_random_init, None, config.sd,
+                                           shape_model)  # b=[num_examples, num_shape_params]
+    landmarks = shape_model_func.b2landmarks(b, shape_model)  # landmarks=[num_examples, num_landmarks, 3]
     num_examples = b.shape[0]
 
     # Extract patches from landmarks
@@ -190,7 +191,9 @@ def predict_landmarks(image, config, shape_model,
     landmarks_all_steps = np.zeros((max_test_steps + 1, num_examples, num_landmarks, 3))
     landmarks_all_steps[0] = landmarks
 
-    for j in xrange(max_test_steps):    # find path of landmark iteratively
+    for j in xrange(max_test_steps):
+        # find path of landmark iteratively
+        print("Step: " + str(j))
         # Predict CNN outputs
         action_ind_val, yc_val, yr_val = sess.run([action_ind, yc, yr], feed_dict={x: patches, keep_prob: 1.0})
 
@@ -238,7 +241,8 @@ def update_b(b, action_prob, yr_val, predict_mode):
         b[row_ind, ind] = b[row_ind, ind] - yr_val[row_ind, ind]
     elif predict_mode == 1:
         # Soft classification. Multiply classification probabilities with regressed distances.
-        b = b - yr_val * np.amax(np.reshape(action_prob, (b.shape[0], b.shape[1], 2)), axis=2)
+        t = np.reshape(action_prob, (b.shape[0], b.shape[1], 2))
+        b = b - yr_val * np.amax(t, axis=2)
     elif predict_mode == 2:
         # Regression only.
         b = b - yr_val
