@@ -34,7 +34,7 @@ class Config(object):
     log_dir = './logs'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = 'shape_model/shape_model/ShapeModelCt9landmarks.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
     eigvec_per = 0.995  # Percentage of eigenvectors to keep
     sd = 3.0  # Standard deviation of shape parameters
     landmark_count = 9  # Number of landmarks

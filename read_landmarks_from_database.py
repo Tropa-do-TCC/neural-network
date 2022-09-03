@@ -4,6 +4,7 @@ import shutil
 
 FOLDER_PATH_LANDMARKS = "../neural-network/data/landmarks_from_ct/"
 FOLDER_PATH_NIFTI = "../neural-network/data/nifit_files_from_ct/"
+FOLDER_PATH_DATA = "../neural-network/data/"
 
 
 def read_landmarks_points(line):
@@ -33,6 +34,8 @@ def rename_nifi_file(file_path, folder):
 
 
 def create_output_folder():
+    if not exists(FOLDER_PATH_DATA):
+        os.mkdir(FOLDER_PATH_DATA)
     if not exists(FOLDER_PATH_LANDMARKS):
         os.mkdir(FOLDER_PATH_LANDMARKS)
     if not exists(FOLDER_PATH_NIFTI):
