@@ -26,13 +26,13 @@ np.random.seed(0)
 class Config(object):
     """Inference configurations."""
     # File paths
-    data_dir = './data/Images'
-    label_dir = './data/landmarsk_from_ct'
+    data_dir = './data/nifit_files_from_ct'
+    label_dir = './data/landmarks_from_ct'
     train_list_file = './data/list_train.txt'
     test_list_file = './data/list_test.txt'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModelCt9landmarks.mat'
     eigvec_per = 0.995      # Percentage of eigenvectors to keep
     sd = 3.0                # Standard deviation of shape parameters
     landmark_count = 9     # Number of landmarks

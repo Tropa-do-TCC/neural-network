@@ -17,14 +17,8 @@ for i=1:length(TrainingData)
     disp(i)
     x(:,i)=reshape(TrainingData(i).Vertices', [], 1);
 end
-<<<<<<< HEAD
 disp('new matrix')
 disp(x)
-=======
-disp("X")
-disp(x)
-disp(size(x))
->>>>>>> cdb79294ffe076500f17eb0046fcf639bdeeb3c7
 
 [Evalues, Evectors, x_mean]=PCA(x);
 

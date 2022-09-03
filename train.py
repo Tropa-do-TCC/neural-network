@@ -27,26 +27,26 @@ logging.getLogger('tensorflow').disabled = True
 class Config(object):
     """Training configurations."""
     # File paths
-    data_dir = './data/Images'
-    label_dir = './data/landmarsk_from_ct'
+    data_dir = './data/nifit_files_from_ct'
+    label_dir = './data/landmarks_from_ct'
     train_list_file = './data/list_train.txt'
     test_list_file = './data/list_test.txt'
     log_dir = './logs'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
-    eigvec_per = 0.995      # Percentage of eigenvectors to keep
-    sd = 3.0                # Standard deviation of shape parameters
-    landmark_count = 9     # Number of landmarks
-    landmark_unwant = []     # list of unwanted landmark indices
+    shape_model_file = 'shape_model/shape_model/ShapeModelCt9landmarks.mat'
+    eigvec_per = 0.995  # Percentage of eigenvectors to keep
+    sd = 3.0  # Standard deviation of shape parameters
+    landmark_count = 9  # Number of landmarks
+    landmark_unwant = []  # list of unwanted landmark indices
     # Training parameters
-    resume = False          # Whether to train from scratch or resume previous training
-    box_size = 101          # patch size (odd number)
-    alpha = 0.5             # Weighting given to the loss (0<=alpha<=1). loss = alpha*loss_c + (1-alpha)*loss_r
+    resume = False  # Whether to train from scratch or resume previous training
+    box_size = 101  # patch size (odd number)
+    alpha = 0.5  # Weighting given to the loss (0<=alpha<=1). loss = alpha*loss_c + (1-alpha)*loss_r
     learning_rate = 0.001
-    max_steps = 1000     # Number of steps to train
-    save_interval = 250   # Number of steps in between saving each model
-    batch_size = 10         # Training batch size
+    max_steps = 1000  # Number of steps to train
+    save_interval = 250  # Number of steps in between saving each model
+    batch_size = 10  # Training batch size
     dropout = 0.5
 
 
@@ -71,11 +71,13 @@ def main():
     print("Building graph...")
     # Input placeholders
     with tf.name_scope('input'):
-        x = tf.placeholder(tf.float32, [None, config.box_size, config.box_size, 3*config.landmark_count], name='x-input')
+        x = tf.placeholder(tf.float32, [None, config.box_size, config.box_size, 3 * config.landmark_count],
+                           name='x-input')
         tf.add_to_collection('x', x)
-        yc_ = tf.placeholder(tf.float32, [None, num_cnn_output_c], name='yc-input')     # one hot vector for classification labels (positive or negative for each shape parameter)
+        yc_ = tf.placeholder(tf.float32, [None, num_cnn_output_c],
+                             name='yc-input')  # one hot vector for classification labels (positive or negative for each shape parameter)
         tf.add_to_collection('yc_', yc_)
-        yr_ = tf.placeholder(tf.float32, [None, num_cnn_output_r], name='yr-input')     # regression output
+        yr_ = tf.placeholder(tf.float32, [None, num_cnn_output_r], name='yr-input')  # regression output
         tf.add_to_collection('yr_', yr_)
 
     # Define CNN model
@@ -135,7 +137,6 @@ def main():
         tf.summary.scalar('accuracy', accuracy)
         # Regression squared distance error is given by loss_r
 
-
     # Run training
     print("Start training...")
     sess = tf.InteractiveSession()
@@ -167,7 +168,6 @@ def main():
                                                                      shape_model,
                                                                      config.sd)
 
-
         # Train one step
         _ = sess.run(train_step, feed_dict={x: patches_train,
                                             yc_: actions_train,
@@ -176,9 +176,10 @@ def main():
                                             alpha: config.alpha})
 
         # Save trained model
-        if ((i+1) % config.save_interval) == 0:
-            saver.save(sess, os.path.join(config.model_dir, 'model'), global_step=i+1)
-            print("Trained model save successfully in {} at step {}".format(os.path.join(config.model_dir, 'model'), i+1))
+        if ((i + 1) % config.save_interval) == 0:
+            saver.save(sess, os.path.join(config.model_dir, 'model'), global_step=i + 1)
+            print("Trained model save successfully in {} at step {}".format(os.path.join(config.model_dir, 'model'),
+                                                                            i + 1))
 
     train_writer.close()
     test_writer.close()
@@ -208,7 +209,7 @@ def get_train_pairs(batch_size, images, bs_gt, box_size, num_actions, num_regres
     img_count = len(images)
     num_landmarks = shape_model['Evectors'].shape[0] / 3
     box_r = int((box_size - 1) / 2)
-    patches = np.zeros((batch_size, box_size, box_size, int(3*num_landmarks)), np.float32)
+    patches = np.zeros((batch_size, box_size, box_size, int(3 * num_landmarks)), np.float32)
     actions_ind = np.zeros(batch_size, dtype=np.uint16)
     actions = np.zeros((batch_size, num_actions), np.float32)
 
@@ -231,15 +232,14 @@ def get_train_pairs(batch_size, images, bs_gt, box_size, num_actions, num_regres
     dbs = bs - bs_gt[ind]
 
     # Extract classification labels as a one-hot vector
-    max_db_ind = np.argmax(np.abs(dbs), axis=1)     # [batch_size]
-    max_db = dbs[np.arange(dbs.shape[0]), max_db_ind]   # [batch_size]
+    max_db_ind = np.argmax(np.abs(dbs), axis=1)  # [batch_size]
+    max_db = dbs[np.arange(dbs.shape[0]), max_db_ind]  # [batch_size]
     is_positive = (max_db > 0)
     actions_ind[is_positive] = max_db_ind[is_positive] * 2
     actions_ind[np.logical_not(is_positive)] = max_db_ind[np.logical_not(is_positive)] * 2 + 1
     actions[np.arange(batch_size), actions_ind] = 1
 
     return patches, actions, dbs, bs
-
 
 if __name__ == '__main__':
     main()
