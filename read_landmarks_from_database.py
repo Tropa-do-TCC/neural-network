@@ -10,8 +10,8 @@ FOLDER_PATH_DATA = "../neural-network/data/"
 def read_landmarks_points(line):
     new_points = []
 
-    points = (line.split(":")[1]).replace(",", " ").replace("\"", "").split()
-
+    #points = (line.split(":")[1]).replace(",", " ").replace("\"", "").split()
+    points = (line.replace(",", "").split(":")[1]).replace("[", "").replace("]", "").split()
     num_1 = float(points[0])
     num_2 = float(points[1])
     num_3 = float(points[2])
@@ -60,7 +60,7 @@ def generate_files_landmarks_and_nifit(file_path):
 
                 read_points_description = []
                 for line in read_lines:
-                    if "\"description\": " in line:
+                    if "\"position\": " in line:
                         # create txt file with landmarks
                         read_points_description.append(read_landmarks_points(line))
 

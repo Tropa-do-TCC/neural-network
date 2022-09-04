@@ -32,14 +32,14 @@ class Config(object):
     test_list_file = './data/list_test.txt'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModelTeste.mat'
     eigvec_per = 0.995      # Percentage of eigenvectors to keep
     sd = 3.0                # Standard deviation of shape parameters
     landmark_count = 9     # Number of landmarks
     landmark_unwant = []     # list of unwanted landmark indices
     # Testing parameters
     box_size = 101          # patch size (odd number)
-    max_test_steps = 5     # Number of inference steps
+    max_test_steps = 100     # Number of inference steps
     num_random_init = 5     # Number of random initialisations used
     predict_mode = 1        # How the new patch position is computed.
                             # 0: Classification and regression. Hard classification

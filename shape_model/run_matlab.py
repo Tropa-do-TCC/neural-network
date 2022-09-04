@@ -1,15 +1,14 @@
 from oct2py import Oct2Py
 from scipy.io import savemat
 
-
 oc = Oct2Py()
 
 script = ""
 
-with open("shape_model/CreateShapeModel.m") as script_file:
+with open("CreateShapeModel.m") as script_file:
     script = script_file.read()
-with open("shape_model/myScript.m", "w+") as f:
+with open("myScript.m", "w+") as f:
     f.write(script)
 
-oc.myScript(7)
-
+#oc.myScript(7)
+savemat("shape_model/ShapeModelTeste.mat", oc.myScript(7))

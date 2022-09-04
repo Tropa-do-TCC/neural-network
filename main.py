@@ -26,7 +26,7 @@ def train_neural_network_with_dataset():
     # TODO: verificar se há necessidade de criar um novo shape-model
     generate_train_file.generate_list_train_with_list(ct_folders_list)
     generate_test_file.generate_empty_test_file()
-    train.main()
+    #train.main()
 
 
 def made_a_test_infer_landmarks_and_reconstruct():
@@ -41,3 +41,5 @@ def made_a_test_infer_landmarks_and_reconstruct():
         dcm_folder = "../dataset/cq500/CQ500-" + test_input + "/"
 
         # reconstruction_module.reconstruct(dcm_folder, predict_landmarks)
+
+train_neural_network_with_dataset()

@@ -34,7 +34,7 @@ class Config(object):
     log_dir = './logs'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = 'shape_model/shape_model/ShapeModelTesteCt9landmarks.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModelTeste.mat'
     eigvec_per = 0.995  # Percentage of eigenvectors to keep
     sd = 3.0  # Standard deviation of shape parameters
     landmark_count = 9  # Number of landmarks
@@ -44,8 +44,8 @@ class Config(object):
     box_size = 101  # patch size (odd number)
     alpha = 0.5  # Weighting given to the loss (0<=alpha<=1). loss = alpha*loss_c + (1-alpha)*loss_r
     learning_rate = 0.001
-    max_steps = 1000  # Number of steps to train
-    save_interval = 250  # Number of steps in between saving each model
+    max_steps = 5000  # Number of steps to train
+    save_interval = 1000  # Number of steps in between saving each model
     batch_size = 10  # Training batch size
     dropout = 0.5
 
