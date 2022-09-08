@@ -22,10 +22,12 @@ def train_neural_network_with_dataset():
     ct_folders_list = read_landmarks_from_database.generate_files_landmarks_and_nifit("../dataset/")
 
     # STEP 2: Create train/test files and made neural network train with read ct's
-    # TODO: dividir a lista de cts entre 70% treino e 30% teste
-    # TODO: verificar se há necessidade de criar um novo shape-model
-    generate_train_file.generate_list_train_with_list(ct_folders_list)
-    generate_test_file.generate_empty_test_file()
+    size = len(ct_folders_list)
+    train_set = ct_folders_list[0: int(size*0.7)]
+    test_set = ct_folders_list[int(size*0.7): size]
+
+    generate_train_file.generate_list_train_with_list(train_set)
+    generate_test_file.generate_list_test_with_list(test_set)
     #train.main()
 
 

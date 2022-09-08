@@ -34,19 +34,19 @@ class Config(object):
     log_dir = './logs'
     model_dir = './cnn_model'
     # Shape model parameters
-    shape_model_file = 'shape_model/shape_model/ShapeModelTeste.mat'
+    shape_model_file = 'shape_model/shape_model/ShapeModel07-09_30datasets.mat'
     eigvec_per = 0.995  # Percentage of eigenvectors to keep
     sd = 3.0  # Standard deviation of shape parameters
     landmark_count = 9  # Number of landmarks
     landmark_unwant = []  # list of unwanted landmark indices
     # Training parameters
-    resume = False  # Whether to train from scratch or resume previous training
+    resume = True  # Whether to train from scratch or resume previous training
     box_size = 101  # patch size (odd number)
     alpha = 0.5  # Weighting given to the loss (0<=alpha<=1). loss = alpha*loss_c + (1-alpha)*loss_r
     learning_rate = 0.001
-    max_steps = 5000  # Number of steps to train
-    save_interval = 1000  # Number of steps in between saving each model
-    batch_size = 10  # Training batch size
+    max_steps = 2000  # Number of steps to train
+    save_interval = 2000  # Number of steps in between saving each model
+    batch_size = 64  # Training batch size
     dropout = 0.5
 
 
@@ -159,6 +159,7 @@ def main():
         ite_end = config.max_steps
 
     for i in xrange(ite_start, ite_end):
+        print("Iteração número: " + str(i))
         patches_train, actions_train, dbs_train, _ = get_train_pairs(config.batch_size,
                                                                      data.train.images,
                                                                      data.train.shape_params,

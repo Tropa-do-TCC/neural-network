@@ -10,5 +10,4 @@ with open("CreateShapeModel.m") as script_file:
 with open("myScript.m", "w+") as f:
     f.write(script)
 
-#oc.myScript(7)
-savemat("shape_model/ShapeModelTeste.mat", oc.myScript(7))
+savemat("shape_model/ShapeModel07-09_76datasets.mat", oc.myScript(7))

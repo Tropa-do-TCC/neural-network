@@ -14,6 +14,7 @@ disp(nl)
 % Construct a matrix with all contour point data of the training data set
 x=zeros(nl*3,s);
 for i=1:length(TrainingData)
+    disp("dataset")
     disp(i)
     x(:,i)=reshape(TrainingData(i).Vertices', [], 1);
 end

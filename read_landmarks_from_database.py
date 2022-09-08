@@ -64,6 +64,7 @@ def generate_files_landmarks_and_nifit(file_path):
                         # create txt file with landmarks
                         read_points_description.append(read_landmarks_points(line))
 
+                print("Landmarsks lidos na pasta " + str(folder) + " : " + str(len(read_points_description)))
                 create_file_with_landmarks(folder, read_points_description)
 
             # create nii.gz file with dataset files
