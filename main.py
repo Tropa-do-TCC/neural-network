@@ -2,8 +2,7 @@ import read_landmarks_from_database
 from util_scripts_data_augmentation import generate_train_file, generate_test_file
 import train
 import infer
-
-test_list = ["CT-040"]
+from reconstruct import reconstruction
 
 
 def read_predict_landmarks(file_path):
@@ -33,15 +32,18 @@ def train_neural_network_with_dataset():
 
 def made_a_test_infer_landmarks_and_reconstruct():
     # STEP 3: Crate test file with 30% and made the test
-    generate_test_file.generate_list_test_with_list(test_list)
     infer.main()
 
     # STEP 4: Reconstruction with predict landmarks
+    test_list = generate_test_file.read_test_file()
     for test_input in test_list:
+        original_landmarks = read_predict_landmarks("./data/landmarks_from_ct/" + test_input + "_ps.txt")
         predict_landmarks = read_predict_landmarks("./results/landmarks/test/" + test_input + "_ps.txt")
         # TODO: checar modulo de reconstrucao para confirmar se a pasta é essa msm
-        dcm_folder = "../dataset/cq500/CQ500-" + test_input + "/"
+        dcm_folder = "./data/" + test_input + "/"
+        print(original_landmarks)
+        print(predict_landmarks)
 
-        # reconstruction_module.reconstruct(dcm_folder, predict_landmarks)
+        reconstruction.reconstruct_with_landmarks(dcm_folder, original_landmarks, predict_landmarks)
 
 train_neural_network_with_dataset()
